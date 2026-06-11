@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# ============================================================
+# jam-drop — pre-commit hook
+# ============================================================
+# Bloquea el commit si:
+#   1. gitleaks detecta secretos
+#   2. el mensaje de commit es vacio (lo chequea el hook commit-msg)
+#   3. (futuro) cargo fmt / clippy / test fallan
+#
+# Activacion (corre UNA vez tras clonar):
+#   git config core.hooksPath .githooks
+# ============================================================
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo -e "${YELLOW}[pre-commit]${NC} corriendo verificaciones..."
+
+# ---- 1. gitleaks ----
+if ! command -v gitleaks >/dev/null 2>&1; then
+  # Fallback a la ruta de instalacion de winget si no esta en PATH
+  GITLEAKS_FALLBACK="/c/Users/$USERNAME/AppData/Local/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe"
+  if [ -x "$GITLEAKS_FALLBACK" ]; then
+    GITLEAKS_CMD="$GITLEAKS_FALLBACK"
+  else
+    echo -e "${RED}[pre-commit] gitleaks no esta instalado.${NC}"
+    echo "Instalar con: winget install gitleaks.gitleaks"
+    exit 1
+  fi
+else
+  GITLEAKS_CMD="gitleaks"
+fi
+
+echo -e "${YELLOW}[pre-commit]${NC} gitleaks (staged)..."
+if ! "$GITLEAKS_CMD" protect --staged --config=.gitleaks.toml --no-banner --redact; then
+  echo -e "${RED}[pre-commit] gitleaks detecto posibles secretos en el commit.${NC}"
+  echo "Revisar y o (a) sacarlos del commit, o (b) si es un falso positivo,"
+  echo "  agregar la excepcion JUSTIFICADA en .gitleaks.toml."
+  exit 1
+fi
+
+echo -e "${GREEN}[pre-commit] OK${NC}"

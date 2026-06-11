@@ -1,0 +1,67 @@
+name: Release
+
+# Se dispara cuando empujas un tag tipo v*.
+# Ej: git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & release (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+          - platform: 'ubuntu-22.04'
+          - platform: 'windows-latest'
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Guard — solo si hay src-tauri
+        id: guard
+        shell: bash
+        run: |
+          if [ -f src-tauri/Cargo.toml ]; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "::notice::Sin src-tauri/Cargo.toml — release skipped. Aparece cuando termine la Fase 1."
+          fi
+
+      - name: Install Rust
+        if: steps.guard.outputs.ready == 'true'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Tauri system deps (Linux)
+        if: steps.guard.outputs.ready == 'true' && matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Setup Node (para Tauri CLI si la usamos)
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build & publish release
+        if: steps.guard.outputs.ready == 'true'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'jam-drop ${{ github.ref_name }}'
+          releaseBody: 'Binarios multi-plataforma de jam-drop ${{ github.ref_name }}. Ver README.'
+          releaseDraft: true
+          prerelease: false
+          projectPath: src-tauri

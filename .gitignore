@@ -1,0 +1,76 @@
+# --- Rieles anti-leak (NO MOVER de aca arriba) ---
+# Variables de entorno reales y cualquier secreto
+.env
+.env.local
+.env.*.local
+*.secret
+*.secret.*
+secrets/
+**/secrets/
+
+# Llaves criptograficas
+*.pem
+*.key
+*.pub
+*.p12
+*.pfx
+id_*
+id_*.pub
+authorized_keys
+known_hosts
+
+# Config local del usuario (NO commit)
+config.local.toml
+peers.local.toml
+
+# --- Rust / Cargo ---
+target/
+**/*.rs.bk
+Cargo.lock.user
+
+# --- Tauri ---
+src-tauri/target/
+src-tauri/WixTools/
+src-tauri/gen/
+dist/
+
+# --- Node / frontend (si llegamos a usarlo) ---
+node_modules/
+.pnp
+.pnp.js
+.npm
+.yarn-integrity
+package-lock.json.bak
+
+# --- Build artefactos ---
+*.exe
+*.dll
+*.so
+*.dylib
+*.dmg
+*.AppImage
+*.msi
+*.deb
+*.rpm
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Inbox local de usuarios (NO se commitea la data del usuario) ---
+inbox/
+runtime/
+data/
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Sistema operativo ---
+ehthumbs.db
+Desktop.ini

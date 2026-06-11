@@ -1,0 +1,30 @@
+# gitleaks config para jam-drop
+# Hereda los detectores por defecto de gitleaks y agrega
+# reglas/excepciones especificas del proyecto.
+
+# Carga las reglas built-in (recomendado)
+[extend]
+useDefault = true
+
+# Excepciones puntuales — agregar SOLO con justificacion clara
+[allowlist]
+description = "Allowlist global de jam-drop"
+
+# Archivos/paths que NO se escanean (son plantillas o docs sin secretos reales)
+paths = [
+  # El example NO tiene secretos reales, son placeholders
+  '''\.env\.example$''',
+  # Plantilla de peers de ejemplo
+  '''peers\.example\.toml$''',
+  # Lock files de cargo (no contienen secretos)
+  '''Cargo\.lock$''',
+  # Node lock (idem)
+  '''package-lock\.json$''',
+]
+
+# Strings exactos que son placeholders, no secretos reales
+regexes = [
+  # JAMDROP_SHARED_TOKEN= sin valor o con placeholder
+  '''JAMDROP_SHARED_TOKEN=\s*$''',
+  '''JAMDROP_SHARED_TOKEN=<.*>''',
+]
