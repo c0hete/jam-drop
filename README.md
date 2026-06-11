@@ -12,7 +12,7 @@ y el destino, y llega a su inbox. Todo viaja por una red privada que vos adminis
 
 ## Estado
 
-🚧 **MVP en desarrollo.** Ver [PLAN.md](PLAN.md).
+🚧 **MVP en desarrollo.** Decisiones arquitectónicas en [docs/decisions/](docs/decisions/).
 
 ## Para qué (y para qué NO)
 

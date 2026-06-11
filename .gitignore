@@ -74,3 +74,6 @@ logs/
 # --- Sistema operativo ---
 ehthumbs.db
 Desktop.ini
+
+# --- mente-colmena (memoria local, NO al repo) ---
+.mente-colmena/

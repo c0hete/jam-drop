@@ -22,7 +22,7 @@ inbox propia. Una UI permite elegir archivo y destino.
 
 ```
 jam-drop/
-├── .mc, .gitignore, .env.example, README, CLAUDE.md, PLAN.md
+├── .mc, .gitignore, .env.example, README, CLAUDE.md
 ├── .github/workflows/  ← ci.yml + release.yml
 ├── docs/               ← decisiones arquitectónicas
 ├── src-tauri/          ← código Rust + config Tauri
@@ -58,6 +58,6 @@ jam-drop/
 
 ## Para profundizar
 
-- Plan paso a paso: `PLAN.md`
+- Decisiones arquitectónicas: `docs/decisions/`
 - Decisiones: `docs/`
 - Malla WireGuard: `JRAM/infraestructura/mail-alvaradomazzei/documentacion/WIREGUARD_MALLA.md`

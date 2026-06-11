@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jam-drop</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>jam-drop</h1>
+        <p class="subtitle">drag-and-drop entre tus equipos, sobre tu propia malla</p>
+      </header>
+
+      <section class="card">
+        <h2>Equipos vivos en la malla</h2>
+        <p id="peers-status" class="muted">— sin escanear todavía —</p>
+        <ul id="peers-list"></ul>
+        <button id="refresh-peers" type="button">Refrescar</button>
+      </section>
+
+      <section class="card placeholder">
+        <h2>Enviar archivo</h2>
+        <p class="muted">Disponible cuando esté el daemon de la Fase 2.</p>
+      </section>
+
+      <footer>
+        <p>
+          jam-drop · MVP ·
+          <a href="https://github.com/c0hete/jam-drop" target="_blank" rel="noreferrer">
+            código en GitHub
+          </a>
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
