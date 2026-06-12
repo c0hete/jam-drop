@@ -22,6 +22,22 @@ log = "0.4"
 tauri = { version = "2.11.2", features = [] }
 tauri-plugin-log = "2"
 
+# Daemon HTTP
+axum = { version = "0.8", features = ["multipart"] }
+tokio = { version = "1", features = ["full"] }
+tower = "0.5"
+
+# Util
+dirs = "5"
+anyhow = "1"
+thiserror = "2"
+dotenvy = "0.15"
+
+[dev-dependencies]
+# Para hacer requests al daemon en tests
+reqwest = { version = "0.12", default-features = false, features = ["multipart", "json", "rustls-tls"] }
+tempfile = "3"
+
 # Profile de release: binario mas chico y rapido.
 [profile.release]
 panic = "abort"
