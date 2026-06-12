@@ -1,0 +1,31 @@
+[package]
+name = "jam-drop"
+version = "0.1.0"
+description = "Drag-and-drop entre tus equipos personales sobre tu propia malla WireGuard."
+authors = ["c0hete"]
+license = "MIT"
+repository = "https://github.com/c0hete/jam-drop"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "jam_drop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.2", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.11.2", features = [] }
+tauri-plugin-log = "2"
+
+# Profile de release: binario mas chico y rapido.
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
