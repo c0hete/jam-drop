@@ -61,7 +61,32 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'jam-drop ${{ github.ref_name }}'
-          releaseBody: 'Binarios multi-plataforma de jam-drop ${{ github.ref_name }}. Ver README.'
-          releaseDraft: true
+          releaseBody: |
+            ## jam-drop ${{ github.ref_name }}
+
+            Drag-and-drop entre tus equipos personales sobre tu propia malla privada
+            (WireGuard u otra), sin nube ajena.
+
+            ### Instalación
+
+            **Windows**: descargá `jam-drop_<version>_x64_en-US.msi` y ejecutalo.
+            **macOS**: descargá `jam-drop_<version>_x64.dmg`.
+            **Linux**: descargá el `.AppImage` o `.deb` según tu distro.
+
+            ### Configuración mínima
+
+            Tras instalar, creá `.env` al lado del binario con:
+            ```
+            JAMDROP_DEVICE_NAME=mi-equipo
+            JAMDROP_BIND_IP=10.x.x.x
+            JAMDROP_PORT=7777
+            JAMDROP_SHARED_TOKEN=<el-mismo-token-en-todos-tus-equipos>
+            ```
+
+            Y editá `%APPDATA%/jam-drop/peers.toml` (Windows) o
+            `~/.local/share/jam-drop/peers.toml` (Linux/Mac) con tus equipos.
+
+            Ver el README del repo para el detalle.
+          releaseDraft: false
           prerelease: false
           projectPath: src-tauri
