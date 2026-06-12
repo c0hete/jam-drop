@@ -258,14 +258,25 @@ mod tests {
         );
     }
 
+    // Rutas con `/` son separadores en TODAS las plataformas. Forward slash siempre
+    // se descarta, dejando solo el basename.
     #[test]
     fn safe_filename_descarta_rutas() {
         assert_eq!(safe_filename("../../etc/passwd"), Some("passwd".into()));
+        assert_eq!(safe_filename("/etc/shadow"), Some("shadow".into()));
+        assert_eq!(safe_filename("dir/sub/file.txt"), Some("file.txt".into()));
+    }
+
+    // Backslash `\` solo es separador en Windows. En Linux/Mac es un caracter
+    // valido dentro del nombre. Por eso este test corre solo en Windows.
+    #[cfg(windows)]
+    #[test]
+    fn safe_filename_descarta_rutas_windows() {
         assert_eq!(
             safe_filename(r"C:\Windows\evil.exe"),
             Some("evil.exe".into())
         );
-        assert_eq!(safe_filename("/etc/shadow"), Some("shadow".into()));
+        assert_eq!(safe_filename(r"..\..\evil.exe"), Some("evil.exe".into()));
     }
 
     #[test]

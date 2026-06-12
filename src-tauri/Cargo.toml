@@ -32,10 +32,14 @@ dirs = "5"
 anyhow = "1"
 thiserror = "2"
 dotenvy = "0.15"
+toml = "0.8"
+
+# Cliente HTTP para hablar con los demas peers desde los comandos Tauri.
+# Usa rustls para no depender de OpenSSL del sistema.
+reqwest = { version = "0.12", default-features = false, features = ["multipart", "json", "rustls-tls"] }
 
 [dev-dependencies]
-# Para hacer requests al daemon en tests
-reqwest = { version = "0.12", default-features = false, features = ["multipart", "json", "rustls-tls"] }
+# reqwest ya esta en deps principales; aca solo tempfile para tests
 tempfile = "3"
 
 # Profile de release: binario mas chico y rapido.

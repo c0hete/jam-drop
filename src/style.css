@@ -60,12 +60,22 @@ header .subtitle {
   font-weight: 600;
 }
 
-.card.placeholder {
-  opacity: 0.6;
-  border-style: dashed;
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.hidden { display: none; }
+code {
+  background: var(--surface-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
 
 #peers-list {
   list-style: none;
@@ -100,6 +110,58 @@ button {
 }
 button:hover { filter: brightness(1.08); }
 button:active { transform: translateY(1px); }
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--surface-2);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+button.ghost:hover { color: var(--text); border-color: var(--accent); }
+
+/* Formulario de envío */
+#send-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.field > span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.field input[type="file"],
+.field select {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--surface-2);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+.field select:focus,
+.field input[type="file"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+#send-status {
+  min-height: 1.2em;
+  margin: 0;
+}
+#send-status .ok { color: var(--ok); }
+#send-status .down { color: var(--error); }
 
 footer {
   text-align: center;

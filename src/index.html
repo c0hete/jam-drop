@@ -11,18 +11,38 @@
       <header>
         <h1>jam-drop</h1>
         <p class="subtitle">drag-and-drop entre tus equipos, sobre tu propia malla</p>
+        <p id="me-line" class="muted small">cargando identidad...</p>
       </header>
 
       <section class="card">
-        <h2>Equipos vivos en la malla</h2>
-        <p id="peers-status" class="muted">— sin escanear todavía —</p>
+        <div class="card-head">
+          <h2>Equipos en la malla</h2>
+          <button id="refresh-peers" type="button" class="ghost">↻ Refrescar</button>
+        </div>
+        <p id="peers-status" class="muted small">— sin escanear todavía —</p>
         <ul id="peers-list"></ul>
-        <button id="refresh-peers" type="button">Refrescar</button>
+        <p id="peers-empty-hint" class="muted small hidden">
+          Sin peers configurados. Editá
+          <code id="peers-file-link">peers.toml</code> y volvé a refrescar.
+        </p>
       </section>
 
-      <section class="card placeholder">
+      <section class="card">
         <h2>Enviar archivo</h2>
-        <p class="muted">Disponible cuando esté el daemon de la Fase 2.</p>
+        <form id="send-form">
+          <label class="field">
+            <span>Archivo</span>
+            <input type="file" id="file-input" required />
+          </label>
+          <label class="field">
+            <span>Destino</span>
+            <select id="dest-select" required>
+              <option value="">— elegí un equipo vivo —</option>
+            </select>
+          </label>
+          <button id="send-btn" type="submit">Enviar</button>
+          <p id="send-status" class="muted small"></p>
+        </form>
       </section>
 
       <footer>
