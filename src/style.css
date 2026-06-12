@@ -70,6 +70,23 @@ header .subtitle {
 .muted { color: var(--muted); }
 .small { font-size: 0.85rem; }
 .hidden { display: none; }
+
+/* indicador discreto de "escaneando" — un puntito al lado del texto */
+#peers-status.scanning::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%      { opacity: 1;   transform: scale(1.1); }
+}
 code {
   background: var(--surface-2);
   padding: 0.1rem 0.4rem;

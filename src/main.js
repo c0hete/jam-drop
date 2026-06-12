@@ -40,29 +40,49 @@ async function loadMe() {
 }
 
 // ----- refrescar lista de peers + estado vivo/muerto -----
+//
+// IMPORTANTE: NO limpiamos la lista al empezar — eso genera parpadeo de 1-1.5s
+// (el timeout del ping). En su lugar:
+//   1. Marcamos la card como "escaneando..." con clase visual.
+//   2. Esperamos el resultado del backend.
+//   3. Reemplazamos el contenido de una sola vez cuando llega.
+//
+// Si el escaneo falla, dejamos la lista vieja visible (mejor info stale que vacía).
+
+let refreshing = false;
+
 async function refresh() {
-  peersStatus.textContent = "escaneando...";
-  peersList.innerHTML = "";
-  peersEmptyHint.classList.add("hidden");
+  if (refreshing) return; // evita refreshes solapados
+  refreshing = true;
+  peersStatus.classList.add("scanning");
 
   let statuses;
   try {
     statuses = await invoke("check_peers");
   } catch (e) {
     peersStatus.textContent = `error: ${e}`;
+    peersStatus.classList.remove("scanning");
+    refreshing = false;
     return;
   }
 
+  peersStatus.classList.remove("scanning");
+  refreshing = false;
+
   if (!statuses || statuses.length === 0) {
     peersStatus.textContent = "no hay peers configurados";
+    peersList.innerHTML = "";
     peersEmptyHint.classList.remove("hidden");
     rebuildDestOptions([]);
     return;
   }
+  peersEmptyHint.classList.add("hidden");
 
   const alive = statuses.filter((p) => p.alive);
   peersStatus.textContent = `${alive.length} de ${statuses.length} vivos`;
 
+  // Reemplazo atomico de la lista (sin parpadeo intermedio).
+  const frag = document.createDocumentFragment();
   for (const p of statuses) {
     const li = document.createElement("li");
     const latency = p.alive && p.latency_ms != null ? ` · ${p.latency_ms} ms` : "";
@@ -72,8 +92,9 @@ async function refresh() {
       </span>
       <span class="${p.alive ? "ok" : "down"}">${p.alive ? "● vivo" : "○ sin respuesta"}</span>
     `;
-    peersList.appendChild(li);
+    frag.appendChild(li);
   }
+  peersList.replaceChildren(frag);
 
   lastAlivePeers = alive;
   rebuildDestOptions(alive);
