@@ -4,8 +4,8 @@
 # ============================================================
 # Bloquea el commit si:
 #   1. gitleaks detecta secretos
-#   2. el mensaje de commit es vacio (lo chequea el hook commit-msg)
-#   3. (futuro) cargo fmt / clippy / test fallan
+#   2. cargo fmt --check falla (solo si hay cambios en src-tauri/)
+#   3. cargo clippy con -D warnings falla (idem)
 #
 # Activacion (corre UNA vez tras clonar):
 #   git config core.hooksPath .githooks
@@ -40,6 +40,37 @@ if ! "$GITLEAKS_CMD" protect --staged --config=.gitleaks.toml --no-banner --reda
   echo "Revisar y o (a) sacarlos del commit, o (b) si es un falso positivo,"
   echo "  agregar la excepcion JUSTIFICADA en .gitleaks.toml."
   exit 1
+fi
+
+# ---- 2. cargo fmt + clippy (solo si tocaste algo en src-tauri/) ----
+RUST_CHANGED="$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src-tauri/.*\.(rs|toml)$' || true)"
+if [ -n "$RUST_CHANGED" ]; then
+  # cargo: fallback al PATH default de rustup en Windows
+  if ! command -v cargo >/dev/null 2>&1; then
+    if [ -x "$HOME/.cargo/bin/cargo.exe" ]; then
+      export PATH="$HOME/.cargo/bin:$PATH"
+    elif [ -x "/c/Users/$USERNAME/.cargo/bin/cargo.exe" ]; then
+      export PATH="/c/Users/$USERNAME/.cargo/bin:$PATH"
+    fi
+  fi
+
+  if [ ! -f src-tauri/Cargo.toml ]; then
+    echo -e "${YELLOW}[pre-commit] sin Cargo.toml, skipping rust checks${NC}"
+  elif ! command -v cargo >/dev/null 2>&1; then
+    echo -e "${RED}[pre-commit] cargo no esta en PATH. Instalar Rust o agregar ~/.cargo/bin al PATH.${NC}"
+    exit 1
+  else
+    echo -e "${YELLOW}[pre-commit]${NC} cargo fmt --check..."
+    if ! (cd src-tauri && cargo fmt --all -- --check); then
+      echo -e "${RED}[pre-commit] formato Rust roto. Correr: (cd src-tauri && cargo fmt --all)${NC}"
+      exit 1
+    fi
+    echo -e "${YELLOW}[pre-commit]${NC} cargo clippy -D warnings..."
+    if ! (cd src-tauri && cargo clippy --all-targets --quiet -- -D warnings); then
+      echo -e "${RED}[pre-commit] clippy fallo. Revisar warnings arriba.${NC}"
+      exit 1
+    fi
+  fi
 fi
 
 echo -e "${GREEN}[pre-commit] OK${NC}"

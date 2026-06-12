@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-  jam_drop_lib::run();
+    jam_drop_lib::run();
 }
